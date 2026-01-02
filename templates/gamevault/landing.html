@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SquadGames - Your Ultimate Party & Team Building Game Collection</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background: #0f0f23;
+            color: #fff;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+            top: -250px;
+            right: -250px;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(118, 75, 162, 0.15) 0%, transparent 70%);
+            bottom: -200px;
+            left: -200px;
+            animation: pulse 6s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 72px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 24px;
+            color: #b0b0c0;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .stats {
+            display: flex;
+            gap: 60px;
+            justify-content: center;
+            margin-top: 80px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #b0b0c0;
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 120px 40px;
+            background: #1a1a3e;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #b0b0c0;
+            font-size: 20px;
+            margin-bottom: 60px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: rgba(102, 126, 234, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: #667eea;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .feature-card p {
+            color: #b0b0c0;
+            line-height: 1.6;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 120px 40px;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+        }
+
+        .steps {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .step {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            background: rgba(102, 126, 234, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .step-number {
+            font-size: 64px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            min-width: 100px;
+        }
+
+        .step-content h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .step-content p {
+            color: #b0b0c0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* Categories */
+        .categories {
+            padding: 120px 40px;
+            background: #1a1a3e;
+        }
+
+        .categories-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .category-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .category-icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+        }
+
+        .category-card h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .category-count {
+            color: #b0b0c0;
+            font-size: 14px;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 120px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .cta p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-white {
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: #0f0f23;
+            padding: 60px 40px 30px;
+            border-top: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .footer-section a {
+            display: block;
+            color: #b0b0c0;
+            text-decoration: none;
+            margin-bottom: 10px;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #667eea;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(102, 126, 234, 0.2);
+            color: #b0b0c0;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 48px; }
+            .hero p { font-size: 18px; }
+            .stats { flex-direction: column; gap: 30px; }
+            .step { flex-direction: column; text-align: center; }
+            .step-number { min-width: auto; }
+            .nav { padding: 15px 20px; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">🎮 SquadGames</div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#categories">Categories</a>
+                <a href="{% url 'game_list' %}" class="btn btn-primary">Get Started</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content" x-data="{ count: 0 }" x-init="setInterval(() => { if(count < 500) count += 10 }, 50)">
+            <h1 class="floating">Transform Every Gathering</h1>
+            <p>The ultimate collection of party games, team-building activities, and icebreakers. Never run out of fun ideas again.</p>
+            
+            <div class="hero-buttons">
+                <a href="{% url 'game_list' %}" class="btn btn-primary">Browse Games</a>
+                <a href="{% url 'game_create' %}" class="btn btn-outline">Add Your Game</a>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" x-text="count + '+'">500+</div>
+                    <div class="stat-label">Games Available</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">Happy Players</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Categories</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Why Choose SquadGames?</h2>
+        <p class="section-subtitle">Everything you need to create unforgettable moments with friends, family, and colleagues</p>
+        
+        <div class="features-grid">
+            <div class="feature-card" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+                <div class="feature-icon">🎯</div>
+                <h3>Curated Collection</h3>
+                <p>Hundreds of games carefully selected and tested by real players. From classics to hidden gems.</p>
+            </div>
+
+            <div class="feature-card" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+                <div class="feature-icon">📋</div>
+                <h3>Detailed Instructions</h3>
+                <p>Clear, step-by-step guides with everything you need to know. No confusion, just fun.</p>
+            </div>
+
+            <div class="feature-card" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+                <div class="feature-icon">👥</div>
+                <h3>Smart Filtering</h3>
+                <p>Find the perfect game for any group size, time limit, or difficulty level in seconds.</p>
+            </div>
+
+            <div class="feature-card" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+                <div class="feature-icon">💬</div>
+                <h3>Community Reviews</h3>
+                <p>Real feedback from real players. Share your experiences and learn from others.</p>
+            </div>
+
+            <div class="feature-card" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+                <div class="feature-icon">🚀</div>
+                <h3>Quick Setup</h3>
+                <p>Most games require minimal materials and setup. Jump into the fun immediately.</p>
+            </div>
+
+            <div class="feature-card" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+                <div class="feature-icon">✨</div>
+                <h3>Always Fresh</h3>
+                <p>New games added regularly by our community. Discover something new every visit.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Getting started is as easy as 1-2-3</p>
+        
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">01</div>
+                <div class="step-content">
+                    <h3>Search & Filter</h3>
+                    <p>Use our powerful search and filtering tools to find games that match your group size, available time, and mood. Looking for outdoor activities? Team building exercises? We've got you covered.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">02</div>
+                <div class="step-content">
+                    <h3>Read & Learn</h3>
+                    <p>Each game comes with detailed descriptions, clear instructions, and helpful tips from players who've tried it. Know exactly what to expect before you start.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">03</div>
+                <div class="step-content">
+                    <h3>Play & Share</h3>
+                    <p>Jump into the action! After playing, share your experience through comments and help others discover the best games. Even contribute your own favorite games to the community.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories" id="categories">
+        <h2 class="section-title">Explore Categories</h2>
+        <p class="section-subtitle">From icebreakers to team challenges, find games for every occasion</p>
+        
+        <div class="categories-grid" x-data="{ activeCategory: null }">
+            <div class="category-card" @click="activeCategory = 1" :class="{ 'active': activeCategory === 1 }">
+                <div class="category-icon">🎭</div>
+                <h3>Icebreakers</h3>
+                <p class="category-count">65 games</p>
+            </div>
+
+            <div class="category-card" @click="activeCategory = 2" :class="{ 'active': activeCategory === 2 }">
+                <div class="category-icon">🤝</div>
+                <h3>Team Building</h3>
+                <p class="category-count">82 games</p>
+            </div>
+
+            <div class="category-card" @click="activeCategory = 3" :class="{ 'active': activeCategory === 3 }">
+                <div class="category-icon">🎉</div>
+                <h3>Party Games</h3>
+                <p class="category-count">124 games</p>
+            </div>
+
+            <div class="category-card" @click="activeCategory = 4" :class="{ 'active': activeCategory === 4 }">
+                <div class="category-icon">🏃</div>
+                <h3>Active Games</h3>
+                <p class="category-count">58 games</p>
+            </div>
+
+            <div class="category-card" @click="activeCategory = 5" :class="{ 'active': activeCategory === 5 }">
+                <div class="category-icon">🧠</div>
+                <h3>Brain Teasers</h3>
+                <p class="category-count">71 games</p>
+            </div>
+
+            <div class="category-card" @click="activeCategory = 6" :class="{ 'active': activeCategory === 6 }">
+                <div class="category-icon">👨‍👩‍👧‍👦</div>
+                <h3>Family Fun</h3>
+                <p class="category-count">93 games</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div x-data="{ email: '' }">
+            <h2>Ready to Level Up Your Gatherings?</h2>
+            <p>Join thousands of event organizers, teachers, and party hosts who never run out of game ideas</p>
+            <a href="{% url 'game_list' %}" class="btn btn-white">Start Exploring Games</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>🎮 SquadGames</h4>
+                <p style="color: #b0b0c0; line-height: 1.6;">Your ultimate destination for discovering amazing party games, team-building activities, and unforgettable experiences.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="{% url 'game_list' %}">Browse Games</a>
+                <a href="{% url 'game_create' %}">Add a Game</a>
+                <!-- <a href="#">Categories</a> -->
+                <a href="{% url 'game_list' %}">Popular Games</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Community</h4>
+                <a href="https://elimbadi.com" target="_blank">About Us</a>
+                <a href="#">Blog (Coming Soon)</a>
+                <a href="https://github.com/elishambadi" target="_blank">Contributors</a>
+                <!-- <a href="#">Guidelines</a> -->
+            </div>
+
+            <div class="footer-section">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; <script>document.write(new Date().getFullYear())</script> SquadGames. Made with ❤️ for bringing people together.</p>
+        </div>
+    </footer>
+</body>
+</html>

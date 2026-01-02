@@ -1,0 +1,6 @@
+# Files to be ignored
+media
+db.sqlite3
+pyc.db
+pycache
+.env

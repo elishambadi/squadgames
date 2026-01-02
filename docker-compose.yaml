@@ -1,0 +1,58 @@
+version: '3.8'
+
+name: squadgames
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: squadgames-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - squadgames-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env  # Make sure this is loaded
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: postgres  # PostgreSQL service name
+      GIN_MODE: release   # or debug depending on your environment
+      SEED_DB: "false"    # Consistent environment variable
+    ports:
+      - "8086:8000"      # Expose port 8087 for your app
+    depends_on:
+      postgres:
+        condition: service_healthy  # Ensure PostgreSQL is ready before app starts
+    restart: always
+    volumes:
+      - ./media:/app/media
+    networks:
+      - squadgames-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postgres_data:
+    name: squadgames_postgres_data
+networks:
+  squadgames-network:
+    driver: bridge

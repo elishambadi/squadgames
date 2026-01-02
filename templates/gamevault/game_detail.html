@@ -1,0 +1,106 @@
+{% extends 'gamevault/base.html' %}
+
+{% block title %}{{ game.title }} - SquadGames{% endblock %}
+
+{% block content %}
+<div x-data="{ showComments: true }">
+    <div style="margin-bottom: 20px;">
+        <a href="{% url 'game_list' %}" style="color: #667eea; text-decoration: none;">← Back to Games</a>
+    </div>
+    
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
+            <h1 style="font-size: 36px; color: #667eea;">{{ game.title }}</h1>
+            {% if user == game.created_by %}
+                <a href="{% url 'game_edit' game.slug %}" class="btn btn-secondary">Edit Game</a>
+            {% endif %}
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+            <span class="badge badge-{{ game.difficulty }}">{{ game.get_difficulty_display }}</span>
+            <span class="badge badge-info">{{ game.min_players }}-{{ game.max_players }} players</span>
+            <span class="badge badge-info">⏱️ {{ game.duration_minutes }} minutes</span>
+            <span class="badge badge-info">👁️ {{ game.views }} views</span>
+        </div>
+        
+        {% for category in game.categories.all %}
+            <span class="badge" style="background: #e3e8f0; color: #667eea; margin-right: 5px;">
+                {{ category.name }}
+            </span>
+        {% endfor %}
+        
+        <div style="margin-top: 30px;">
+            <h2 style="color: #333; margin-bottom: 15px;">Description</h2>
+            <div style="line-height: 1.8; color: #555;">
+                {{ game.description|safe }}
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <h2 style="color: #333; margin-bottom: 15px;">How to Play</h2>
+            <div style="line-height: 1.8; color: #555; white-space: pre-line;">
+                {{ game.instructions }}
+            </div>
+        </div>
+        
+        {% if game.materials_needed %}
+        <div style="margin-top: 30px;">
+            <h2 style="color: #333; margin-bottom: 15px;">Materials Needed</h2>
+            <div style="line-height: 1.8; color: #555; white-space: pre-line;">
+                {{ game.materials_needed }}
+            </div>
+        </div>
+        {% endif %}
+        
+        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; color: #888; font-size: 14px;">
+            Added by {{ game.created_by.username|default:"Unknown" }} on {{ game.created_at|date:"F d, Y" }}
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="font-size: 24px; color: #333;">
+                Comments ({{ comments.count }})
+            </h2>
+            <button @click="showComments = !showComments" class="btn btn-secondary">
+                <span x-text="showComments ? 'Hide Comments' : 'Show Comments'"></span>
+            </button>
+        </div>
+        
+        <div x-show="showComments" x-transition>
+            {% if user.is_authenticated %}
+            <div class="card">
+                <h3 style="margin-bottom: 15px; color: #333;">Add a Comment</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.content }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post Comment</button>
+                </form>
+            </div>
+            {% else %}
+            <div class="card" style="background: #f8f9fa; text-align: center;">
+                <p>Please <a href="#" style="color: #667eea;">login</a> to leave a comment.</p>
+            </div>
+            {% endif %}
+            
+            <div style="margin-top: 20px;">
+                {% for comment in comments %}
+                <div class="card comment">
+                    <div style="margin-bottom: 8px;">
+                        <span class="comment-author">{{ comment.author.username }}</span>
+                        <span class="comment-date">• {{ comment.created_at|date:"M d, Y at h:i A" }}</span>
+                    </div>
+                    <p style="color: #555; line-height: 1.6;">{{ comment.content }}</p>
+                </div>
+                {% empty %}
+                <p style="text-align: center; color: #888; padding: 20px;">
+                    No comments yet. Be the first to share your thoughts!
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'gamevault/base.html' %}
+
+{% block title %}{{ action }} Game - SquadGames{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <h1 style="font-size: 32px; color: #667eea; margin-bottom: 20px;">{{ action }} Game</h1>
+    
+    <form method="post" x-data="{ 
+        previewDescription: false,
+        descriptionContent: '{{ game.description|default:''|escapejs }}'
+    }">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_title">Game Title *</label>
+            {{ form.title }}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_description">Description (HTML allowed) *</label>
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <button type="button" @click="previewDescription = false" 
+                        :class="!previewDescription ? 'btn-primary' : 'btn-secondary'" class="btn">
+                    Edit
+                </button>
+                <button type="button" @click="previewDescription = true" 
+                        :class="previewDescription ? 'btn-primary' : 'btn-secondary'" class="btn">
+                    Preview
+                </button>
+            </div>
+            <div x-show="!previewDescription">
+                {{ form.description }}
+            </div>
+            <div x-show="previewDescription" style="padding: 15px; background: #f8f9fa; border-radius: 5px; min-height: 100px;">
+                <div x-html="descriptionContent || 'Nothing to preview yet...'"></div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="id_instructions">Instructions *</label>
+            {{ form.instructions }}
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label for="id_min_players">Minimum Players *</label>
+                {{ form.min_players }}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_max_players">Maximum Players *</label>
+                {{ form.max_players }}
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label for="id_duration_minutes">Duration (minutes) *</label>
+                {{ form.duration_minutes }}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_difficulty">Difficulty *</label>
+                {{ form.difficulty }}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Categories *</label>
+            {{ form.categories }}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_materials_needed">Materials Needed</label>
+            {{ form.materials_needed }}
+        </div>
+        
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn btn-primary">Save Game</button>
+            <a href="{% if game %}{% url 'game_detail' game.slug %}{% else %}{% url 'game_list' %}{% endif %}" 
+               class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

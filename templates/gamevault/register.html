@@ -1,0 +1,119 @@
+{% extends 'gamevault/base.html' %}
+
+{% block title %}Register - SquadGames{% endblock %}
+
+{% block content %}
+<div x-data="{ 
+    showPassword1: false, 
+    showPassword2: false,
+    username: '',
+    password1: '',
+    password2: '',
+    passwordsMatch: true,
+    checkPasswords() {
+        this.passwordsMatch = this.password1 === this.password2 || this.password2 === '';
+    }
+}" style="max-width: 500px; margin: 80px auto;">
+    <div class="card" style="padding: 40px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="font-size: 36px; color: #667eea; margin-bottom: 10px;">Join SquadGames</h1>
+            <p style="color: #888;">Create an account to save favorites and add games</p>
+        </div>
+        
+        <form method="post" @submit="return passwordsMatch">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="alert alert-error" style="margin-bottom: 20px;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                <input type="text" name="username" id="id_username" x-model="username"
+                       class="{% if form.username.errors %}error{% endif %}"
+                       value="{{ form.username.value|default:'' }}"
+                       placeholder="Choose a unique username" required>
+                {% if form.username.errors %}
+                    <span style="color: #dc3545; font-size: 14px;">{{ form.username.errors.0 }}</span>
+                {% elif form.username.help_text %}
+                    <span style="color: #888; font-size: 12px; display: block; margin-top: 5px;">
+                        {{ form.username.help_text }}
+                    </span>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_password1">Password</label>
+                <div style="position: relative;">
+                    <input :type="showPassword1 ? 'text' : 'password'" 
+                           name="password1" id="id_password1" x-model="password1"
+                           @input="checkPasswords"
+                           class="{% if form.password1.errors %}error{% endif %}"
+                           placeholder="Create a strong password" required>
+                    <button type="button" @click="showPassword1 = !showPassword1"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
+                                   background: none; border: none; cursor: pointer; color: #667eea; font-size: 14px;">
+                        <span x-text="showPassword1 ? '🙈' : '👁️'"></span>
+                    </button>
+                </div>
+                {% if form.password1.errors %}
+                    <span style="color: #dc3545; font-size: 14px;">{{ form.password1.errors.0 }}</span>
+                {% endif %}
+                {% if form.password1.help_text %}
+                    <div style="color: #888; font-size: 12px; margin-top: 5px; line-height: 1.4;">
+                        {{ form.password1.help_text }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_password2">Confirm Password</label>
+                <div style="position: relative;">
+                    <input :type="showPassword2 ? 'text' : 'password'" 
+                           name="password2" id="id_password2" x-model="password2"
+                           @input="checkPasswords"
+                           :style="!passwordsMatch ? 'border-color: #dc3545;' : ''"
+                           class="{% if form.password2.errors %}error{% endif %}"
+                           placeholder="Re-enter your password" required>
+                    <button type="button" @click="showPassword2 = !showPassword2"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); 
+                                   background: none; border: none; cursor: pointer; color: #667eea; font-size: 14px;">
+                        <span x-text="showPassword2 ? '🙈' : '👁️'"></span>
+                    </button>
+                </div>
+                {% if form.password2.errors %}
+                    <span style="color: #dc3545; font-size: 14px;">{{ form.password2.errors.0 }}</span>
+                {% endif %}
+                <div x-show="!passwordsMatch && password2 !== ''" 
+                     style="color: #dc3545; font-size: 14px; margin-top: 5px;">
+                    Passwords do not match
+                </div>
+                <div x-show="passwordsMatch && password2 !== ''" 
+                     style="color: #28a745; font-size: 14px; margin-top: 5px;">
+                    ✓ Passwords match
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;"
+                    :disabled="!passwordsMatch">
+                Create Account
+            </button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 30px; padding-top: 30px; border-top: 1px solid #eee;">
+            <p style="color: #888; margin-bottom: 10px;">Already have an account?</p>
+            <a href="{% url 'login' %}" style="color: #667eea; text-decoration: none; font-weight: 600;">
+                Login Here →
+            </a>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'game_list' %}" style="color: #888; text-decoration: none; font-size: 14px;">
+                ← Back to Games
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

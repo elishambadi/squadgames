@@ -1,0 +1,96 @@
+{% extends 'gamevault/base.html' %}
+
+{% block title %}Browse Games - SquadGames{% endblock %}
+
+{% block content %}
+<div x-data="{ 
+    showFilters: true,
+    selectedDifficulty: '{{ selected_difficulty|default:'' }}',
+    searchQuery: '{{ search_query|default:'' }}'
+}">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1 style="font-size: 32px; color: #333;">Discover Games</h1>
+        <button @click="showFilters = !showFilters" class="btn btn-secondary">
+            <span x-text="showFilters ? 'Hide Filters' : 'Show Filters'"></span>
+        </button>
+    </div>
+    
+    <div x-show="showFilters" x-transition class="filters">
+        <form method="get" class="filter-group">
+            <div>
+                <input type="text" name="search" x-model="searchQuery" placeholder="Search games..." 
+                       style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; width: 250px;">
+            </div>
+            
+            <div>
+                <select name="difficulty" x-model="selectedDifficulty" 
+                        style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <option value="">All Difficulties</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            
+            <div>
+                <select name="category" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.slug }}" {% if category.slug == selected_category %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+            <a href="{% url 'game_list' %}" class="btn btn-secondary">Clear</a>
+        </form>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+        {% for game in games %}
+            <div class="card" x-data="{ expanded: false }">
+                <h2 style="margin-bottom: 10px; color: #667eea;">
+                    <a href="{% url 'game_detail' game.slug %}" style="text-decoration: none; color: inherit;">
+                        {{ game.title }}
+                    </a>
+                </h2>
+                
+                <div style="margin-bottom: 15px;">
+                    <span class="badge badge-{{ game.difficulty }}">{{ game.get_difficulty_display }}</span>
+                    <span class="badge badge-info">{{ game.min_players }}-{{ game.max_players }} players</span>
+                    <span class="badge badge-info">{{ game.duration_minutes }} min</span>
+                </div>
+                
+                <div x-show="!expanded">
+                    <p style="color: #666; margin-bottom: 15px; line-height: 1.6;">
+                        {{ game.description|striptags|truncatewords:20 }}
+                    </p>
+                    <button @click="expanded = true" style="color: #667eea; background: none; border: none; cursor: pointer; text-decoration: underline;">
+                        Read more
+                    </button>
+                </div>
+                
+                <div x-show="expanded" x-transition>
+                    <div style="color: #666; margin-bottom: 15px; line-height: 1.6;">
+                        {{ game.description|safe }}
+                    </div>
+                    <button @click="expanded = false" style="color: #667eea; background: none; border: none; cursor: pointer; text-decoration: underline;">
+                        Show less
+                    </button>
+                </div>
+                
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #888; font-size: 14px;">👁️ {{ game.views }} views • 💬 {{ game.comment_count }} comments</span>
+                    <a href="{% url 'game_detail' game.slug %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        {% empty %}
+            <p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">
+                No games found. Try adjusting your filters!
+            </p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
