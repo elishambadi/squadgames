@@ -21,14 +21,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+DJANGO_ENV = env('DJANGO_ENV', default='development')
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-p26v=ts!f47pdlbj@5uf+zpep#c@_4r*9bbn^zbvb6b-$w)8@d'
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-p26v=ts!f47pdlbj@5uf+zpep#c@_4r*9bbn^zbvb6b-$w)8@d')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 
 # Application definition
 
@@ -75,11 +79,6 @@ WSGI_APPLICATION = 'gameapp.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
-DJANGO_ENV = env('DJANGO_ENV', default='development')
 
 # Use SQLite for development, PostgreSQL for production
 if DJANGO_ENV == 'production':
